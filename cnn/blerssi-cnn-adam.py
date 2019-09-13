@@ -63,7 +63,7 @@ if __name__ == "__main__":
   # Parse the args
   args = parser.parse_args()
   path='../data/iBeacon_RSSI_Labeled.csv'
-  #path='iBeacon_RSSI_Labeled.csv'
+  #path='/opt/iBeacon_RSSI_Labeled.csv'
   x = read_csv(path, index_col=None)
   x['x'] = x['location'].str[0]
   x['y'] = x['location'].str[1:]
@@ -73,7 +73,6 @@ if __name__ == "__main__":
 
   y = x.iloc[:, -2:]
   x = x.iloc[:, 1:-2]
-
   img_x = np.zeros(shape = (x.shape[0], 25, 25, 1, ))
   for key, value in beacon_coords.items():
     img_x[:, value[0], value[1], 0] -= x[key].values/200
@@ -81,11 +80,10 @@ if __name__ == "__main__":
     train_x, val_x, train_y, val_y = train_test_split(img_x, y, test_size = .2, shuffle = False)
 
   inputs = Input(shape=(train_x.shape[1], train_x.shape[2], 1))
-
 # a layer instance is callable on a tensor, and returns a tensor
-  a = Conv2D(3, kernel_size=(3,3), activation='relu', padding = "valid", data_format="channels_last")(inputs)
+  a = Conv2D(12, kernel_size=(7,7), activation='relu', padding = "valid", data_format="channels_last")(inputs)
   a = MaxPooling2D(2)(a)
-  a = Conv2D(6, kernel_size=(3,3), activation='relu', padding = "valid", data_format="channels_last")(a)
+  a = Conv2D(12, kernel_size=(5,5), activation='relu', padding = "valid", data_format="channels_last")(a)
   a = MaxPooling2D(2)(a)
 #a = Conv2D(12, kernel_size=(3,3), activation='relu', padding = "valid", data_format="channels_last")(a)
 #a = MaxPooling2D(2)(a)
@@ -98,13 +96,12 @@ if __name__ == "__main__":
   model.compile(optimizer=Adam(args.learning_rate,args.beta1),
               loss=rmse,
               metrics=['mse'])
-  model.summary()
   hist = model.fit(x = train_x, y = train_y, validation_data = (val_x,val_y), epochs=100, batch_size=20,  verbose=1)
   preds = model.predict(val_x)
   l2dists_mean, l2dists = l2_dist((preds[:, 0], preds[:, 1]), (val_y["x"], val_y["y"]))
   print('l2_loss={}'.format(l2dists_mean))
   sortedl2_deep = np.sort(l2dists)
   dist_acc = []
-  for i in [1, 2, 3, 5]:
+  for i in [1, 2, 3, 4, 5]:
     dist_acc = dist_acc + [np.sum(sortedl2_deep <= i)/np.size(sortedl2_deep)]
   print(dist_acc)

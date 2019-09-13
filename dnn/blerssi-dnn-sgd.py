@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
   parser.add_argument(
     "--learning_rate",
-    default=0.001,
+    default=0.01,
     type=float,
     help="learning_rate.")
   parser.add_argument(
@@ -80,6 +80,7 @@ if __name__ == "__main__":
   # Parse the args
   args = parser.parse_args()
   path='../data/iBeacon_RSSI_Labeled.csv'
+  #path='/opt/iBeacon_RSSI_Labeled.csv'
   x = read_csv(path, index_col=None)
   x['x'] = x['location'].str[0]
   x['y'] = x['location'].str[1:]
@@ -91,7 +92,7 @@ if __name__ == "__main__":
   x = x.iloc[:, 1:-2]
   train_x, val_x, train_y, val_y = train_test_split(x,y, test_size = .2, shuffle = False)
 
-  model = create_deep(train_x.shape[1],dropout,args.learning_rate,args.momentum)
+  model = create_deep(train_x.shape[1],0,args.learning_rate,args.momentum)
   hist = model.fit(x = train_x, y = train_y, validation_data = (val_x,val_y), epochs=100, batch_size=100,  verbose=1)
   preds = model.predict(val_x)
   l2dists_mean, l2dists = l2_dist((preds[:, 0], preds[:, 1]), (val_y["x"], val_y["y"]))

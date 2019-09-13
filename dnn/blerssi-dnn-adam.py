@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
   parser.add_argument(
     "--learning_rate",
-    default=0.001,
+    default=0.01,
     type=float,
     help="learning_rate.")
   parser.add_argument(
@@ -64,7 +64,7 @@ if __name__ == "__main__":
   # Parse the args
   args = parser.parse_args()
   path='../data/iBeacon_RSSI_Labeled.csv'
-  #path='iBeacon_RSSI_Labeled.csv'
+  #path='/opt/iBeacon_RSSI_Labeled.csv'
   x = read_csv(path, index_col=None)
   x['x'] = x['location'].str[0]
   x['y'] = x['location'].str[1:]
@@ -83,7 +83,7 @@ if __name__ == "__main__":
   print('l2_loss={}'.format(l2dists_mean))
   sortedl2_deep = np.sort(l2dists)
   dist_acc = []
-  for i in [1, 2, 3, 5]:
+  for i in [1, 2, 3, 4, 5]:
     dist_acc = dist_acc + [np.sum(sortedl2_deep <= i)/np.size(sortedl2_deep)]
   print(dist_acc)
 

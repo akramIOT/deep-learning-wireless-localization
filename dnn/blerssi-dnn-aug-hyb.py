@@ -76,6 +76,6 @@ print(l2dists_mean)
 
 sortedl2_deep = np.sort(l2dists)
 dist_acc = []
-for i in [1, 2, 3, 5]:
+for i in [1, 2, 3, 4, 5]:
     dist_acc = dist_acc + [np.sum(sortedl2_deep <= i)/np.size(sortedl2_deep)]
 print(dist_acc)

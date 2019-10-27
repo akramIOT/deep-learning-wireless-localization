@@ -62,8 +62,8 @@ if __name__ == "__main__":
 
   # Parse the args
   args = parser.parse_args()
-  path='../data/iBeacon_RSSI_Labeled.csv'
-  #path='/opt/iBeacon_RSSI_Labeled.csv'
+  #path='../data/iBeacon_RSSI_Labeled.csv'
+  path='/opt/iBeacon_RSSI_Labeled.csv'
   x = read_csv(path, index_col=None)
   x['x'] = x['location'].str[0]
   x['y'] = x['location'].str[1:]

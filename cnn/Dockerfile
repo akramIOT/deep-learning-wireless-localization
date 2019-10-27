@@ -17,8 +17,8 @@ FROM tensorflow/tensorflow:1.13.2-py3
 RUN pip install pandas
 RUN pip install keras 
 RUN pip install sklearn
-ADD blerssi-cnn-sgd.py  /opt/blerssi-cnn-sgd.py
+ADD blerssi-cnn-adam.py  /opt/blerssi-cnn-adam.py
 ADD iBeacon_RSSI_Labeled.csv /opt/iBeacon_RSSI_Labeled.csv
-RUN chmod +x /opt/blerssi-cnn-sgd.py  /opt/iBeacon_RSSI_Labeled.csv
-CMD python /opt/blerssi-cnn-sgd.py
+RUN chmod +x /opt/blerssi-cnn-adam.py  /opt/iBeacon_RSSI_Labeled.csv
+CMD python /opt/blerssi-cnn-adam.py
 

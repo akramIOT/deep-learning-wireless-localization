@@ -1,0 +1,52 @@
+apiVersion: "kubeflow.org/v1alpha3"
+kind: Experiment
+metadata:
+  namespace: kubeflow
+  name: cnn-bayesopt
+spec:
+  parallelTrialCount: 2
+  maxTrialCount: 12
+  maxFailedTrialCount: 9
+  objective:
+    type: minimize
+    goal: 1.3
+    objectiveMetricName: l2_loss
+  algorithm:
+    algorithmName: bayesianoptimization
+    algorithmSettings:
+      - name: "burn_in"
+        value: "5"
+  trialTemplate:
+    goTemplate:
+        rawTemplate: |-
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: {{.Trial}}
+            namespace: {{.NameSpace}}
+          spec:
+            template:
+              spec:
+                containers:
+                - name: {{.Trial}}
+                  image: johnugeorge/cnn-blerssi:0.3
+                  command:
+                  - "python"
+                  - "/opt/blerssi-cnn-adam.py"
+                  {{- with .HyperParameters}}
+                  {{- range .}}
+                  - "{{.Name}}={{.Value}}"
+                  {{- end}}
+                  {{- end}}
+                restartPolicy: Never
+  parameters:
+    - name: --learning_rate
+      parameterType: double
+      feasibleSpace:
+        min: "0.001"
+        max: "0.002"
+    - name: --beta1
+      parameterType: double
+      feasibleSpace:
+        min: "0.88"
+        max: "0.93"
